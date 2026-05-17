@@ -36,6 +36,13 @@ The application operates as a distributed Multi-Agent workflow built on LangGrap
 * **LLM Integration:** LangChain Core Parsers
 
 ---
+### 🔑 Environment Configuration
+
+Before running the application, you must configure your environment variables. Create a `.env` file in the root of your **backend** directory:
+
+```env
+GROQ_API_KEY=your_openai_api_key_here
+```
 
 ## 💻 Getting Started
 
