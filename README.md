@@ -9,7 +9,6 @@ An evidence-based, strict-constraint clinical retrieval engine. This application
 * **Strict Source Anchoring:** Restricts discovery paths exclusively to verified medical domains (`nature.com`, `ahajournals.org`, `ncbi.nlm.nih.gov/pmc`).
 * **Zero-Hallucination Guardrails:** Employs an automated multi-agent grading loop. If data is insufficient or unverifiable, the system acts on a strict fallback loop returning *"I don't know"*.
 * **Sentence-by-Sentence Citations:** Strips internal agent meta-text thoughts and formats clean inline brackets `[1]`, `[2]` mapping sentences directly to context items.
-* **Modern Minimalist UI:** Built with independent Grid mapping to completely eliminate layout shifting or overlapping during dynamic streaming.
 
 ---
 
