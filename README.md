@@ -51,7 +51,10 @@ pip install langgraph langchain-core langchain-openai fastapi uvicorn
 
 # Start the local server
 uvicorn main:app --reload
+```
 
+### 2. Frontend Setup
+```bash
 # Install dependencies
 npm install
 
@@ -60,3 +63,4 @@ npm install react-markdown
 
 # Run the development environment
 npm run dev
+```
