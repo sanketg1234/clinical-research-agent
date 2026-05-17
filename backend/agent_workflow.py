@@ -7,11 +7,6 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from langchain_groq import ChatGroq
-# ==========================================
-# 1. SETUP & STATE
-# ==========================================
-# The API key is loaded in main.py via dotenv before this file is executed.
-# We are using ChatOpenAI but pointing it to OpenRouter's servers.
 
 llm = ChatGroq(
     api_key=os.environ.get("GROQ_API_KEY"),
@@ -24,31 +19,23 @@ class GraphState(TypedDict):
     documents: List[Document]
     generation: str
 
-# ==========================================
-# 2. AGENT NODES
-# ==========================================
 
 def retrieve_node(state: GraphState):
     """Agent 1: The Web Researcher. Searches ONLY trusted medical sites."""
     print("---NODE: LIVE WEB RETRIEVAL---")
     question = state["question"]
-    
-    # 1. Initialize the free search wrapper
+   
     wrapper = DuckDuckGoSearchAPIWrapper()
     
-    # 2. The Strict Domain Filter
-    # PubMed Central (PMC) is included because it hosts open-access Nature/AHA papers
+
     trusted_domains = "site:nature.com OR site:ahajournals.org OR site:ncbi.nlm.nih.gov/pmc"
     
-    # Combine the user's question with our strict filters
     search_query = f"{question} {trusted_domains}"
     print(f"   -> Executing Search: {search_query}")
     
     try:
-        # 3. Fetch the top 4 results from the web
         raw_results = wrapper.results(search_query, max_results=4)
         
-        # 4. Convert the web results into Document objects for the Grader Agent
         documents = []
         for result in raw_results:
             doc = Document(
@@ -63,7 +50,7 @@ def retrieve_node(state: GraphState):
             
     except Exception as e:
         print(f"   -> Search Failed: {e}")
-        documents = [] # If search fails, pass empty docs to trigger the fallback
+        documents = []
 
     return {"documents": documents, "question": question}
 
@@ -137,9 +124,6 @@ def fallback_node(state: GraphState):
         "generation": "I don't know. Reliable information regarding this specific query was not found in the trusted medical journals."
     }
 
-# ==========================================
-# 3. ROUTING LOGIC
-# ==========================================
 
 def decide_to_generate(state: GraphState):
     """Determines next step based on document grading."""
@@ -152,9 +136,6 @@ def decide_to_generate(state: GraphState):
         print("---ROUTING: DOCS APPROVED -> GO TO GENERATE---")
         return "generate"
 
-# ==========================================
-# 4. BUILD THE GRAPH
-# ==========================================
 
 workflow = StateGraph(GraphState)
 

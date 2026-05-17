@@ -4,7 +4,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# IMPORTANT: Load the .env file BEFORE importing the agent workflow
 load_dotenv() 
 
 from agent_workflow import rag_app
@@ -16,7 +15,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allows your React app to talk to this API
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,13 +32,10 @@ class QueryResponse(BaseModel):
 @app.post("/api/v1/query", response_model=QueryResponse)
 async def ask_medical_question(request: QueryRequest):
     try:
-        # Initialize the state for the graph
         inputs = {"question": request.question}
         
-        # Invoke the LangGraph workflow
         result = rag_app.invoke(inputs)
         
-        # Extract the final generation and the sources of the *approved* documents
         final_answer = result.get("generation", "Error: No generation found.")
         approved_docs = result.get("documents", [])
         sources = [doc.metadata.get("source", "Unknown Source") for doc in approved_docs]
