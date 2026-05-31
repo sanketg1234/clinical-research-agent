@@ -52,4 +52,4 @@ async def ask_medical_question(request: QueryRequest):
 
 @app.get("/")
 async def root():
-    return {"status": "Medical RAG API is running safely via OpenRouter."}
+    return {"status": "Medical RAG API is running safely via OpenAI."}
